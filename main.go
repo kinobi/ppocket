@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -21,5 +22,14 @@ func main() {
 		ppocketUserAccessToken, ppocketUsername = pocket.OAuthProcess(ppocketConsumerKey, urlCallback)
 	}
 
-	log.Printf("Welcome to PPocket %s", ppocketUsername)
+	fmt.Println("Welcome to PPocket", ppocketUsername)
+
+	res, err := pocket.Retrieve(ppocketConsumerKey, ppocketUserAccessToken)
+	if err != nil {
+		log.Fatalf("Failed to retrieve Pocket list: %s", err)
+	}
+
+	for _, item := range res.List {
+		fmt.Printf("* %s [%s]\n", item.Title, item.URL)
+	}
 }

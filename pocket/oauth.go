@@ -11,9 +11,11 @@ import (
 	"strings"
 )
 
-const apiRequestToken = "https://getpocket.com/v3/oauth/request"
-const apiUserGrants = "https://getpocket.com/auth/authorize"
-const apiAuthorize = "https://getpocket.com/v3/oauth/authorize"
+const (
+	apiRequestToken = "https://getpocket.com/v3/oauth/request"
+	apiUserGrants   = "https://getpocket.com/auth/authorize"
+	apiAuthorize    = "https://getpocket.com/v3/oauth/authorize"
+)
 
 // OAuthProcess proceed to the OAuth signup
 func OAuthProcess(ppocketConsumerKey string, urlCallback string) (ppocketUserAccessToken, ppocketUsername string) {
