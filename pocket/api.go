@@ -41,16 +41,15 @@ type Results struct {
 	List map[string]Item
 }
 
-// Retrieve execute a call on the retrieve endpoint of Packet
-func Retrieve(consumerKey, accessToken string) (*Results, error) {
-	input := &map[string]string{
-		"consumer_key": consumerKey,
-		"access_token": accessToken,
-		"count":        "10",
-		"state":        "all",
+// Get execute a call on the retrieve endpoint of Pocket
+func Get(consumerKey, accessToken string, gq *GetQuery) (*Results, error) {
+	if gq == nil {
+		gq = NewGetQuery()
 	}
 
-	data, err := json.Marshal(input)
+	gq.setCredentials(consumerKey, accessToken)
+
+	data, err := json.Marshal(gq)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to encode JSON: %s", err)
 	}

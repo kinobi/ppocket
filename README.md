@@ -10,4 +10,5 @@ Usage of ppocket:
         Pocket consumer key (default to env var $PPOCKET_API_CONSUMER_KEY)
 ```
 ## Notes
+* This is a WIP
 * So far, as the project reflects my personnal usage of **Pocket**, the ```package pocket``` focus only on the __article__ type.

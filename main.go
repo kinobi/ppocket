@@ -27,12 +27,13 @@ func main() {
 
 	fmt.Println("Welcome to PPocket", ppocketUsername)
 
-	res, err := pocket.Retrieve(*ppocketConsumerKey, *ppocketUserAccessToken)
+	query := pocket.NewGetQuery(pocket.WithState(pocket.QueryStateArchive), pocket.WithFavorite(pocket.QueryFavoriteOnly))
+
+	res, err := pocket.Get(*ppocketConsumerKey, *ppocketUserAccessToken, query)
 	if err != nil {
 		log.Fatalf("Failed to retrieve Pocket list: %s", err)
 	}
-
 	for _, item := range res.List {
-		fmt.Printf("* %s => %s \n[%s words | status: %v]\n", item.GivenTitle, item.GivenURL, item.WordCount, item.Status)
+		fmt.Printf("* %s => %s \n[%s words | status: %#v | favorite: %v]\n", item.GivenTitle, item.GivenURL, item.WordCount, item.Status, item.Favorite)
 	}
 }
