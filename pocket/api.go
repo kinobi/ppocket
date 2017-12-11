@@ -9,10 +9,31 @@ import (
 
 const apiRetrieve = "https://getpocket.com/v3/get"
 
+// ItemStatus represents the reading state of an item
+type ItemStatus string
+
+// ItemStatus possible values
+const (
+	ItemStatusUnread   ItemStatus = "0"
+	ItemStatusArchived ItemStatus = "1"
+	ItemStatusDeleted  ItemStatus = "2"
+)
+
 // Item represents a website from the Pocket list
 type Item struct {
-	URL   string `json:"given_url"`
-	Title string `json:"given_title"`
+	ItemID        string     `json:"item_id"`
+	ResolvedID    string     `json:"resolved_id"`
+	GivenURL      string     `json:"given_url"`
+	GivenTitle    string     `json:"given_title"`
+	Favorite      string     `json:"favorite"`
+	Status        ItemStatus `json:"status"`
+	ResolvedTitle string     `json:"resolved_title"`
+	ResolvedURL   string     `json:"resolved_url"`
+	Excerpt       string     `json:"excerpt"`
+	IsArticle     string     `json:"is_article"`
+	HasVideo      string     `json:"has_video"`
+	HasImage      string     `json:"has_image"`
+	WordCount     string     `json:"word_count"`
 }
 
 // Results represents a result returned by Pocket
@@ -26,6 +47,7 @@ func Retrieve(consumerKey, accessToken string) (*Results, error) {
 		"consumer_key": consumerKey,
 		"access_token": accessToken,
 		"count":        "10",
+		"state":        "all",
 	}
 
 	data, err := json.Marshal(input)

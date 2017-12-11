@@ -30,6 +30,6 @@ func main() {
 	}
 
 	for _, item := range res.List {
-		fmt.Printf("* %s [%s]\n", item.Title, item.URL)
+		fmt.Printf("* %s => %s \n[%s words | status: %v]\n", item.GivenTitle, item.GivenURL, item.WordCount, item.Status)
 	}
 }
