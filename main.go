@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -11,20 +12,22 @@ import (
 const urlCallback = "https://ppocket.herokuapp.com/"
 
 func main() {
-	ppocketUserAccessToken := os.Getenv("PPOCKET_USER_ACCESS_TOKEN")
-	ppocketUsername := os.Getenv("PPOCKET_USERNAME")
-	ppocketConsumerKey := os.Getenv("PPOCKET_API_CONSUMER_KEY")
-	if ppocketConsumerKey == "" {
-		log.Fatalln("Consumer key is missing: $PPOCKET_API_CONSUMER_KEY is empty")
+	ppocketConsumerKey := flag.String("k", os.Getenv("PPOCKET_API_CONSUMER_KEY"), "Consumer key")
+	if *ppocketConsumerKey == "" {
+		log.Fatalln("Consumer key is missing")
 	}
+	ppocketUserAccessToken := flag.String("a", os.Getenv("PPOCKET_USER_ACCESS_TOKEN"), "User access token")
+	flag.Parse()
 
-	if ppocketUserAccessToken == "" {
-		ppocketUserAccessToken, ppocketUsername = pocket.OAuthProcess(ppocketConsumerKey, urlCallback)
+	ppocketUsername := os.Getenv("PPOCKET_USERNAME")
+
+	if *ppocketUserAccessToken == "" {
+		*ppocketUserAccessToken, ppocketUsername = pocket.OAuthProcess(*ppocketConsumerKey, urlCallback)
 	}
 
 	fmt.Println("Welcome to PPocket", ppocketUsername)
 
-	res, err := pocket.Retrieve(ppocketConsumerKey, ppocketUserAccessToken)
+	res, err := pocket.Retrieve(*ppocketConsumerKey, *ppocketUserAccessToken)
 	if err != nil {
 		log.Fatalf("Failed to retrieve Pocket list: %s", err)
 	}
