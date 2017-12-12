@@ -9,6 +9,7 @@ type GetQuery struct {
 	state       QueryState
 	favorite    QueryFavorite
 	tag         string
+	contentType QueryContentType
 	sort        QuerySort
 }
 
@@ -35,6 +36,16 @@ const (
 	QueryFavoriteOnly     QueryFavorite = 1
 )
 
+// QueryContentType filters on the Pocket items type
+type QueryContentType string
+
+// QueryContentType possible values
+const (
+	QueryContentTypeArticle QueryContentType = "article"
+	QueryContentTypeVideo   QueryContentType = "video"
+	QueryContentTypeImage   QueryContentType = "image"
+)
+
 // QuerySort sort order of the retrieved Pocket items
 type QuerySort string
 
@@ -49,9 +60,10 @@ const (
 // NewGetQuery initialize a GetQuery
 func NewGetQuery(opts ...QueryOption) *GetQuery {
 	gq := &GetQuery{
-		state:    QueryStateAll,
-		favorite: QueryFavoriteOrNot,
-		sort:     QuerySortNewest,
+		state:       QueryStateAll,
+		favorite:    QueryFavoriteOrNot,
+		contentType: QueryContentTypeArticle,
+		sort:        QuerySortNewest,
 	}
 
 	for _, opt := range opts {
@@ -85,11 +97,8 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 		j.Tag = gq.tag
 	}
 
+	j.ContentType = string(gq.contentType)
 	j.Sort = string(gq.sort)
-
-	// Hardcode ContenType to article as it is the scope of ppocket.
-	// Could be changed if video and image should be supported by the ppocket/pocket package.
-	j.ContentType = "article"
 
 	return json.Marshal(j)
 }
@@ -113,6 +122,13 @@ func WithFavorite(favorite QueryFavorite) QueryOption {
 func WithTag(tag string) QueryOption {
 	return func(gq *GetQuery) {
 		gq.tag = tag
+	}
+}
+
+// WithContentType configure the content type filter
+func WithContentType(contentType QueryContentType) QueryOption {
+	return func(gq *GetQuery) {
+		gq.contentType = contentType
 	}
 }
 
