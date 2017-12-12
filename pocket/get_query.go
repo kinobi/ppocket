@@ -56,6 +56,7 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 		State       string `json:"state"`
 		Favorite    *int   `json:"favorite,omitempty"`
 		Tag         string `json:"tag,omitempty"`
+		ContentType string `json:"contentType"`
 	}{}
 	j.ConsumerKey = gq.consumerKey
 	j.AccessToken = gq.accessToken
@@ -69,6 +70,10 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 	if gq.tag != "" {
 		j.Tag = gq.tag
 	}
+
+	// Hardcode ContenType to article as it is the scope of ppocket.
+	// Could be changed if video and image should be supported by the ppocket/pocket package.
+	j.ContentType = "article"
 
 	return json.Marshal(j)
 }
