@@ -27,7 +27,11 @@ func main() {
 
 	fmt.Println("Welcome to PPocket", ppocketUsername)
 
-	query := pocket.NewGetQuery(pocket.WithState(pocket.QueryStateArchive), pocket.WithFavorite(pocket.QueryFavoriteOnly))
+	query := pocket.NewGetQuery(
+		pocket.WithState(pocket.QueryStateArchive),
+		pocket.WithFavorite(pocket.QueryFavoriteOrNot),
+		pocket.WithTag("golang"),
+	)
 
 	res, err := pocket.Get(*ppocketConsumerKey, *ppocketUserAccessToken, query)
 	if err != nil {

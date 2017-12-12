@@ -8,6 +8,7 @@ type GetQuery struct {
 	accessToken string
 	state       QueryState
 	favorite    QueryFavorite
+	tag         string
 }
 
 // QueryOption give the possibility to configure filters
@@ -54,6 +55,7 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 		AccessToken string `json:"access_token"`
 		State       string `json:"state"`
 		Favorite    *int   `json:"favorite,omitempty"`
+		Tag         string `json:"tag,omitempty"`
 	}{}
 	j.ConsumerKey = gq.consumerKey
 	j.AccessToken = gq.accessToken
@@ -62,6 +64,10 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 	if gq.favorite != QueryFavoriteOrNot {
 		favorite := int(gq.favorite)
 		j.Favorite = &favorite
+	}
+
+	if gq.tag != "" {
+		j.Tag = gq.tag
 	}
 
 	return json.Marshal(j)
@@ -78,6 +84,14 @@ func WithState(state QueryState) QueryOption {
 func WithFavorite(favorite QueryFavorite) QueryOption {
 	return func(gq *GetQuery) {
 		gq.favorite = favorite
+	}
+}
+
+// WithTag configure the tag filtering
+// To retrieve the untagged items use the value _untagged_
+func WithTag(tag string) QueryOption {
+	return func(gq *GetQuery) {
+		gq.tag = tag
 	}
 }
 
