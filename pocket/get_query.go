@@ -9,6 +9,7 @@ type GetQuery struct {
 	state       QueryState
 	favorite    QueryFavorite
 	tag         string
+	sort        QuerySort
 }
 
 // QueryOption give the possibility to configure filters
@@ -34,11 +35,23 @@ const (
 	QueryFavoriteOnly     QueryFavorite = 1
 )
 
+// QuerySort sort order of the retrieved Pocket items
+type QuerySort string
+
+// QuerySort possible values
+const (
+	QuerySortNewest QuerySort = "newest"
+	QuerySortOldest QuerySort = "oldest"
+	QuerySortTitle  QuerySort = "title"
+	QuerySortSite   QuerySort = "site"
+)
+
 // NewGetQuery initialize a GetQuery
 func NewGetQuery(opts ...QueryOption) *GetQuery {
 	gq := &GetQuery{
 		state:    QueryStateAll,
 		favorite: QueryFavoriteOrNot,
+		sort:     QuerySortNewest,
 	}
 
 	for _, opt := range opts {
@@ -57,6 +70,7 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 		Favorite    *int   `json:"favorite,omitempty"`
 		Tag         string `json:"tag,omitempty"`
 		ContentType string `json:"contentType"`
+		Sort        string `json:"sort"`
 	}{}
 	j.ConsumerKey = gq.consumerKey
 	j.AccessToken = gq.accessToken
@@ -70,6 +84,8 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 	if gq.tag != "" {
 		j.Tag = gq.tag
 	}
+
+	j.Sort = string(gq.sort)
 
 	// Hardcode ContenType to article as it is the scope of ppocket.
 	// Could be changed if video and image should be supported by the ppocket/pocket package.
@@ -97,6 +113,13 @@ func WithFavorite(favorite QueryFavorite) QueryOption {
 func WithTag(tag string) QueryOption {
 	return func(gq *GetQuery) {
 		gq.tag = tag
+	}
+}
+
+// WithSort configure the sort order of the items
+func WithSort(sort QuerySort) QueryOption {
+	return func(gq *GetQuery) {
+		gq.sort = sort
 	}
 }
 
