@@ -13,6 +13,7 @@ type GetQuery struct {
 	sort        QuerySort
 	detailType  QueryDetail
 	search      string
+	domain      string
 }
 
 // QueryOption give the possibility to configure filters
@@ -97,6 +98,7 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 		Sort        string `json:"sort"`
 		DetailType  string `json:"detailType"`
 		Search      string `json:"search,omitempty"`
+		Domain      string `json:"domain,omitempty"`
 	}{}
 	j.ConsumerKey = gq.consumerKey
 	j.AccessToken = gq.accessToken
@@ -117,6 +119,10 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 
 	if gq.search != "" {
 		j.Search = gq.search
+	}
+
+	if gq.domain != "" {
+		j.Domain = gq.domain
 	}
 
 	return json.Marshal(j)
@@ -169,6 +175,13 @@ func WithDetail(detail QueryDetail) QueryOption {
 func WithSearch(search string) QueryOption {
 	return func(gq *GetQuery) {
 		gq.search = search
+	}
+}
+
+// WithDomain to only return items whose title or url contain the search string
+func WithDomain(domain string) QueryOption {
+	return func(gq *GetQuery) {
+		gq.domain = domain
 	}
 }
 

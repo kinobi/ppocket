@@ -32,7 +32,8 @@ func main() {
 		pocket.WithFavorite(pocket.QueryFavoriteOrNot),
 		pocket.WithTag("golang"),
 		pocket.WithSort(pocket.QuerySortTitle),
-		pocket.WithSearch("API"),
+		pocket.WithSearch("packages"),
+		pocket.WithDomain("blog.learngoprogramming.com"),
 	)
 
 	res, err := pocket.Get(*ppocketConsumerKey, *ppocketUserAccessToken, query)
