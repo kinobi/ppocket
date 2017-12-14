@@ -11,6 +11,7 @@ type GetQuery struct {
 	tag         string
 	contentType QueryContentType
 	sort        QuerySort
+	detailType  QueryDetail
 }
 
 // QueryOption give the possibility to configure filters
@@ -57,6 +58,15 @@ const (
 	QuerySortSite   QuerySort = "site"
 )
 
+// QueryDetail level of details of the retrieved Pocket items
+type QueryDetail string
+
+// QueryDetail possible values
+const (
+	QueryDetailSimple   QueryDetail = "simple"
+	QueryDetailComplete QueryDetail = "complete"
+)
+
 // NewGetQuery initialize a GetQuery
 func NewGetQuery(opts ...QueryOption) *GetQuery {
 	gq := &GetQuery{
@@ -64,6 +74,7 @@ func NewGetQuery(opts ...QueryOption) *GetQuery {
 		favorite:    QueryFavoriteOrNot,
 		contentType: QueryContentTypeArticle,
 		sort:        QuerySortNewest,
+		detailType:  QueryDetailComplete,
 	}
 
 	for _, opt := range opts {
@@ -83,6 +94,7 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 		Tag         string `json:"tag,omitempty"`
 		ContentType string `json:"contentType"`
 		Sort        string `json:"sort"`
+		DetailType  string `json:"detailType"`
 	}{}
 	j.ConsumerKey = gq.consumerKey
 	j.AccessToken = gq.accessToken
@@ -99,6 +111,7 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 
 	j.ContentType = string(gq.contentType)
 	j.Sort = string(gq.sort)
+	j.DetailType = string(gq.detailType)
 
 	return json.Marshal(j)
 }
@@ -136,6 +149,13 @@ func WithContentType(contentType QueryContentType) QueryOption {
 func WithSort(sort QuerySort) QueryOption {
 	return func(gq *GetQuery) {
 		gq.sort = sort
+	}
+}
+
+// WithDetail configure the level of details returned for each items
+func WithDetail(detail QueryDetail) QueryOption {
+	return func(gq *GetQuery) {
+		gq.detailType = detail
 	}
 }
 

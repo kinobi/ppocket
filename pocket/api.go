@@ -19,6 +19,15 @@ const (
 	ItemStatusDeleted  ItemStatus = "2"
 )
 
+// Tag represent a tag
+type Tags map[string]ItemTag
+
+// ItemTag is the link between an Item and a Tag
+type ItemTag struct {
+	ItemID string `json:"item_id"`
+	Tag    string `json:"tag"`
+}
+
 // Item represents a website from the Pocket list
 type Item struct {
 	ItemID        string     `json:"item_id"`
@@ -34,6 +43,7 @@ type Item struct {
 	HasVideo      string     `json:"has_video"`
 	HasImage      string     `json:"has_image"`
 	WordCount     string     `json:"word_count"`
+	Tags          Tags       `json:"tags,omitempty"`
 }
 
 // Results represents a result returned by Pocket

@@ -39,6 +39,10 @@ func main() {
 		log.Fatalf("Failed to retrieve Pocket list: %s", err)
 	}
 	for _, item := range res.List {
-		fmt.Printf("* %s => %s \n[%s words | status: %#v | favorite: %v]\n", item.GivenTitle, item.GivenURL, item.WordCount, item.Status, item.Favorite)
+		fmt.Printf("* %s => %s \n", item.GivenTitle, item.GivenURL)
+		for tag := range item.Tags {
+			fmt.Println("\t- " + tag)
+		}
+		fmt.Printf("\t[%s words | status: %#v | favorite: %v]\n\n", item.WordCount, item.Status, item.Favorite)
 	}
 }
