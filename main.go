@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/kinobi/ppocket/pocket"
 )
@@ -27,13 +28,14 @@ func main() {
 
 	fmt.Println("Welcome to PPocket", ppocketUsername)
 
+	since := time.Date(2017, 12, 16, 0, 0, 0, 0, time.UTC)
+
 	query := pocket.NewGetQuery(
-		pocket.WithState(pocket.QueryStateArchive),
+		pocket.WithState(pocket.QueryStateAll),
 		pocket.WithFavorite(pocket.QueryFavoriteOrNot),
-		pocket.WithTag("golang"),
-		pocket.WithSort(pocket.QuerySortTitle),
-		pocket.WithSearch("packages"),
-		pocket.WithDomain("blog.learngoprogramming.com"),
+		pocket.WithTag("php"),
+		pocket.WithSort(pocket.QuerySortNewest),
+		pocket.WithSince(&since),
 	)
 
 	res, err := pocket.Get(*ppocketConsumerKey, *ppocketUserAccessToken, query)

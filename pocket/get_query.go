@@ -1,6 +1,7 @@
 package pocket
 
 import "encoding/json"
+import "time"
 
 // GetQuery configure a retrieve request on Pocket
 type GetQuery struct {
@@ -14,6 +15,7 @@ type GetQuery struct {
 	detailType  QueryDetail
 	search      string
 	domain      string
+	since       *time.Time
 }
 
 // QueryOption give the possibility to configure filters
@@ -77,6 +79,7 @@ func NewGetQuery(opts ...QueryOption) *GetQuery {
 		contentType: QueryContentTypeArticle,
 		sort:        QuerySortNewest,
 		detailType:  QueryDetailComplete,
+		since:       new(time.Time),
 	}
 
 	for _, opt := range opts {
@@ -99,6 +102,7 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 		DetailType  string `json:"detailType"`
 		Search      string `json:"search,omitempty"`
 		Domain      string `json:"domain,omitempty"`
+		Since       int64  `json:"since,omitempty"`
 	}{}
 	j.ConsumerKey = gq.consumerKey
 	j.AccessToken = gq.accessToken
@@ -123,6 +127,10 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 
 	if gq.domain != "" {
 		j.Domain = gq.domain
+	}
+
+	if gq.since != new(time.Time) {
+		j.Since = gq.since.Unix()
 	}
 
 	return json.Marshal(j)
@@ -182,6 +190,13 @@ func WithSearch(search string) QueryOption {
 func WithDomain(domain string) QueryOption {
 	return func(gq *GetQuery) {
 		gq.domain = domain
+	}
+}
+
+// WithSince to only return items modified since the given since unix timestamp
+func WithSince(since *time.Time) QueryOption {
+	return func(gq *GetQuery) {
+		gq.since = since
 	}
 }
 
