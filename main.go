@@ -36,6 +36,7 @@ func main() {
 		pocket.WithTag("php"),
 		pocket.WithSort(pocket.QuerySortNewest),
 		pocket.WithSince(&since),
+		pocket.WithPagination(4, 4),
 	)
 
 	res, err := pocket.Get(*ppocketConsumerKey, *ppocketUserAccessToken, query)
@@ -43,7 +44,7 @@ func main() {
 		log.Fatalf("Failed to retrieve Pocket list: %s", err)
 	}
 	for _, item := range res.List {
-		fmt.Printf("* %s => %s \n", item.GivenTitle, item.GivenURL)
+		fmt.Printf("* %s => %s \n", item.ResolvedTitle, item.GivenURL)
 		for tag := range item.Tags {
 			fmt.Println("\t- " + tag)
 		}

@@ -16,6 +16,8 @@ type GetQuery struct {
 	search      string
 	domain      string
 	since       *time.Time
+	count       int
+	offset      int
 }
 
 // QueryOption give the possibility to configure filters
@@ -102,6 +104,8 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 		Search      string `json:"search,omitempty"`
 		Domain      string `json:"domain,omitempty"`
 		Since       int64  `json:"since,omitempty"`
+		Count       int    `json:"count,omitempty"`
+		Offset      int    `json:"offset,omitempty"`
 	}{}
 	j.ConsumerKey = gq.consumerKey
 	j.AccessToken = gq.accessToken
@@ -130,6 +134,13 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 
 	if gq.since != nil {
 		j.Since = gq.since.Unix()
+	}
+
+	if gq.count > 0 {
+		j.Count = gq.count
+		if gq.offset > 0 {
+			j.Offset = gq.offset
+		}
 	}
 
 	return json.Marshal(j)
@@ -196,6 +207,21 @@ func WithDomain(domain string) QueryOption {
 func WithSince(since *time.Time) QueryOption {
 	return func(gq *GetQuery) {
 		gq.since = since
+	}
+}
+
+// WithPagination configure number of returned items and an eventual offset
+func WithPagination(count, offset int) QueryOption {
+	return func(gq *GetQuery) {
+		if count < 0 {
+			return
+		}
+
+		gq.count = count
+
+		if offset > 0 {
+			gq.offset = offset
+		}
 	}
 }
 
