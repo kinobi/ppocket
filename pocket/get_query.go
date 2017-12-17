@@ -79,7 +79,6 @@ func NewGetQuery(opts ...QueryOption) *GetQuery {
 		contentType: QueryContentTypeArticle,
 		sort:        QuerySortNewest,
 		detailType:  QueryDetailComplete,
-		since:       new(time.Time),
 	}
 
 	for _, opt := range opts {
@@ -129,7 +128,7 @@ func (gq *GetQuery) MarshalJSON() ([]byte, error) {
 		j.Domain = gq.domain
 	}
 
-	if gq.since != new(time.Time) {
+	if gq.since != nil {
 		j.Since = gq.since.Unix()
 	}
 
